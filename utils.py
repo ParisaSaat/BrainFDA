@@ -25,8 +25,8 @@ def low_freq_mutate(amp_src, amp_trg, L=0.1):
 
 def FDA_source_to_target(src_img, trg_img, L=0.1):
     # get fft of both source and target
-    fft_src = torch.fft.rfft(src_img.clone())
-    fft_trg = torch.fft.rfft(trg_img.clone())
+    fft_src = torch.fft.rfftn(src_img.clone())
+    fft_trg = torch.fft.rfftn(trg_img.clone())
 
     # extract amplitude and phase of both ffts
     amp_src, pha_src = extract_ampl_phase(fft_src.clone())
@@ -40,5 +40,5 @@ def FDA_source_to_target(src_img, trg_img, L=0.1):
                              torch.sin(pha_src.clone()) * amp_src_.clone())
 
     # get the recomposed image: source content, target style
-    src_in_trg = torch.fft.irfft(fft_src_)
+    src_in_trg = torch.fft.irfftn(fft_src_)
     return src_in_trg
