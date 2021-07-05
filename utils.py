@@ -9,21 +9,23 @@ def extract_ampl_phase(fft_im):
     return fft_amp, fft_pha
 
 
-def low_freq_mutate(amp_src, amp_trg, L=0.1):
+def low_freq_mutate(amp_src, amp_trg, L=0.5):
     h, w, d = amp_trg.size()
-    b = (np.floor(np.amin((h, w, d)) * L)).astype(int)
-    amp_src[0:b, 0:b, 0:b] = amp_trg[0:b, 0:b, 0:b]
-    amp_src[0:b, w - b:w, 0:b] = amp_trg[0:b, w - b:w, 0:b]
-    amp_src[0:b, 0:b, d - b:d] = amp_trg[0:b, 0:b, d - b:d]
-    amp_src[0:b, w - b:w, d - b:d] = amp_trg[0:b, w - b:w, d - b:d]
-    amp_src[h - b:h, 0:b, 0:b] = amp_trg[h - b:h, 0:b, 0:b]
-    amp_src[h - b:h, w - b:w, 0:b] = amp_trg[h - b:h, w - b:w, 0:b]
-    amp_src[h - b:h, 0:b, d - b:d] = amp_trg[h - b:h, 0:b, d - b:d]
-    amp_src[h - b:h, w - b:w, d - b:d] = amp_trg[h - b:h, w - b:w, d - b:d]
+    b1 = (np.floor(h * L)).astype(int)
+    b2 = (np.floor(w * L)).astype(int)
+    b3 = (np.floor(d * L)).astype(int)
+    amp_src[0:b1, 0:b2, 0:b3] = amp_trg[0:b1, 0:b2, 0:b3]
+    amp_src[0:b1, w - b2:w, 0:b3] = amp_trg[0:b1, w - b2:w, 0:b3]
+    amp_src[0:b1, 0:b2, d - b3:d] = amp_trg[0:b1, 0:b2, d - b3:d]
+    amp_src[0:b1, w - b2:w, d - b3:d] = amp_trg[0:b1, w - b2:w, d - b3:d]
+    amp_src[h - b1:h, 0:b2, 0:b3] = amp_trg[h - b1:h, 0:b2, 0:b3]
+    amp_src[h - b1:h, w - b2:w, 0:b3] = amp_trg[h - b1:h, w - b2:w, 0:b3]
+    amp_src[h - b1:h, 0:b2, d - b3:d] = amp_trg[h - b1:h, 0:b2, d - b3:d]
+    amp_src[h - b1:h, w - b2:w, d - b3:d] = amp_trg[h - b1:h, w - b2:w, d - b3:d]
     return amp_src
 
 
-def FDA_source_to_target(src_img, trg_img, L=0.1):
+def FDA_source_to_target(src_img, trg_img, L=0.5):
     # get fft of both source and target
     fft_src = torch.fft.rfftn(src_img.clone())
     fft_trg = torch.fft.rfftn(trg_img.clone())
